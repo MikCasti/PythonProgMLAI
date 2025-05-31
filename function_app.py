@@ -1,25 +1,30 @@
-import azure.functions as func
 import logging
+import json
+import azure.functions as func
 
-app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 
-@app.route(route="http_trigger")
-def http_trigger(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info('Python HTTP trigger function processed a request.')
+app= func.FunctionApp()
 
-    name = req.params.get('name')
-    if not name:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            pass
-        else:
-            name = req_body.get('name')
+@app.timer_trigger(schedule="0 * 9 * * *", arg_name="myTimer", run_on_startup=False, use_monitor=False)
+def timer_trigger(myTimer: func.TimerRequest) -> None:
+    if myTimer.past_due:
+        logging.warning("The timer is past due!")
 
-    if name:
-        return func.HttpResponse(f"Hello, {name}. This HTTP triggered function executed successfully.")
-    else:
-        return func.HttpResponse(
-             "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
-             status_code=200
-        )
+    logging.info("Python timer trigger function started.")
+
+    try:
+        with open("tasks.json", "r", encoding="utf-8") as file:
+            tasks = json.load(file)
+
+        for task in tasks:
+            logging.info(f"Task: {task['task']}")
+
+    except FileNotFoundError:
+        logging.error("File tasks.json not found.")
+    except json.JSONDecodeError:
+        logging.error("Error decoding JSON file.")
+
+    logging.info("Python timer trigger function executed.")
+
+
+
