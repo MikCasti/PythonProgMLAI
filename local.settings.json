@@ -2,11 +2,6 @@
   "IsEncrypted": false,
   "Values": {
     "AzureWebJobsStorage": "",
-    "FUNCTIONS_WORKER_RUNTIME": "python",
-    "SQL_SERVER": "da-2025-09.database.windows.net",
-    "SQL_DATABASE": "Test_C001",
-    "SQL_USER":"analystdata@da-2025-09",
-    "SQL_PASSWORD":"AlfaDelta2025"
+    "FUNCTIONS_WORKER_RUNTIME": "python"
   }
 }
-
